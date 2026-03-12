@@ -1,6 +1,6 @@
 package com.FelipeLohan.ecommerce.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 

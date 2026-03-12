@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 import com.FelipeLohan.ecommerce.entities.Order;
 import com.FelipeLohan.ecommerce.entities.OrderItem;
