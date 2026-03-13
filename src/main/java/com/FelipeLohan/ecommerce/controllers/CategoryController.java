@@ -23,4 +23,10 @@ public class CategoryController {
         List<CategoryDTO> list = service.findAll();
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<CategoryDTO>> findFeatured() {
+        List<CategoryDTO> list = service.findFeatured();
+        return ResponseEntity.ok(list);
+    }
 }
