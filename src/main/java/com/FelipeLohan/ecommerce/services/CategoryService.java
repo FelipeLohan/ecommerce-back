@@ -21,4 +21,10 @@ public class CategoryService {
         List<Category> result = repository.findAll();
         return result.stream().map(x -> new CategoryDTO(x)).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> findFeatured() {
+        List<Category> result = repository.findByIsFeaturedTrue();
+        return result.stream().map(x -> new CategoryDTO(x)).toList();
+    }
 }
