@@ -19,6 +19,7 @@ public class Product {
     private String description;
     private Double price;
     private String imgUrl;
+    private Boolean isFeatured = false;
 
     @ManyToMany
     @JoinTable(name = "tb_product_category",
@@ -78,6 +79,14 @@ public class Product {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public Boolean getIsFeatured() {
+        return isFeatured;
+    }
+
+    public void setIsFeatured(Boolean isFeatured) {
+        this.isFeatured = isFeatured;
     }
 
     public Set<Category> getCategories() {
