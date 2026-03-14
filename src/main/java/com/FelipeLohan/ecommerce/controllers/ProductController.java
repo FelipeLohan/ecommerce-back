@@ -1,6 +1,7 @@
 package com.FelipeLohan.ecommerce.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import jakarta.validation.Valid;
 
@@ -30,6 +31,12 @@ public class ProductController {
 
     @Autowired
     private ProductService service;
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<ProductMinDTO>> findFeatured() {
+        List<ProductMinDTO> list = service.findFeatured();
+        return ResponseEntity.ok(list);
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
