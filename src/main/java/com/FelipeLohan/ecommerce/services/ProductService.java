@@ -1,5 +1,7 @@
 package com.FelipeLohan.ecommerce.services;
 
+import java.util.List;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,12 @@ public class ProductService {
         Product product = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductMinDTO> findFeatured() {
+        List<Product> result = repository.findByIsFeaturedTrue();
+        return result.stream().map(x -> new ProductMinDTO(x)).toList();
     }
 
     @Transactional(readOnly = true)
@@ -79,6 +87,9 @@ public class ProductService {
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
+        if (dto.getIsFeatured() != null) {
+            entity.setIsFeatured(dto.getIsFeatured());
+        }
 
         entity.getCategories().clear();
         for (CategoryDTO catDto : dto.getCategories()) {
