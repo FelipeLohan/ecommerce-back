@@ -2,6 +2,8 @@
 
 API REST para e-commerce desenvolvida com Spring Boot, com autenticação OAuth2/JWT, controle de acesso por papéis e gerenciamento completo de produtos, pedidos e usuários.
 
+**Ambiente de produção:** https://ecommerce.felipelohan.com/
+
 ## Stack
 
 - **Java 17** + **Spring Boot 2.7.3**
@@ -68,6 +70,14 @@ APP_PROFILE=prod ./mvnw spring-boot:run
 
 A API usa OAuth2 com tokens JWT. Para obter um token:
 
+**Produção:**
+```bash
+curl -X POST https://ecommerce.felipelohan.com/oauth/token \
+  -u "myclientid:myclientsecret" \
+  -d "grant_type=password&username=alex@gmail.com&password=123456"
+```
+
+**Local:**
 ```bash
 curl -X POST http://localhost:8080/oauth/token \
   -u "myclientid:myclientsecret" \
