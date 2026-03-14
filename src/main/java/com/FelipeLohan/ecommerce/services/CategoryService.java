@@ -5,6 +5,8 @@ import java.util.List;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,12 +30,14 @@ public class CategoryService {
         return result.stream().map(x -> new CategoryDTO(x)).toList();
     }
 
+    @Cacheable("featuredCategories")
     @Transactional(readOnly = true)
     public List<CategoryDTO> findFeatured() {
         List<Category> result = repository.findByIsFeaturedTrue();
         return result.stream().map(x -> new CategoryDTO(x)).toList();
     }
 
+    @CacheEvict(value = "featuredCategories", allEntries = true)
     @Transactional
     public CategoryDTO insert(CategoryDTO dto) {
         Category entity = new Category();
@@ -43,6 +47,7 @@ public class CategoryService {
         return new CategoryDTO(entity);
     }
 
+    @CacheEvict(value = "featuredCategories", allEntries = true)
     @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         try {
@@ -59,6 +64,7 @@ public class CategoryService {
         }
     }
 
+    @CacheEvict(value = "featuredCategories", allEntries = true)
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {
