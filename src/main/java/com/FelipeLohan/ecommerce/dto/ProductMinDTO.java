@@ -8,6 +8,7 @@ public class ProductMinDTO {
     private String name;
     private Double price;
     private String imgUrl;
+    private Boolean isFeatured;
 
     public ProductMinDTO(Long id, String name, Double price, String imgUrl) {
         this.id = id;
@@ -21,6 +22,7 @@ public class ProductMinDTO {
         name = entity.getName();
         price = entity.getPrice();
         imgUrl = entity.getImgUrl();
+        isFeatured = entity.getIsFeatured();
     }
 
     public Long getId() {
@@ -37,5 +39,9 @@ public class ProductMinDTO {
 
     public String getImgUrl() {
         return imgUrl;
+    }
+
+    public Boolean getIsFeatured() {
+        return isFeatured;
     }
 }

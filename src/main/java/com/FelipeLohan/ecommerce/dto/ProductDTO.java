@@ -25,6 +25,7 @@ public class ProductDTO {
     @Positive(message = "O preço deve ser positivo")
     private Double price;
     private String imgUrl;
+    private Boolean isFeatured;
 
     @NotEmpty(message = "Deve ter pelo menos uma categoria")
     private List<CategoryDTO> categories = new ArrayList<>();
@@ -46,6 +47,7 @@ public class ProductDTO {
         description = entity.getDescription();
         price = entity.getPrice();
         imgUrl = entity.getImgUrl();
+        isFeatured = entity.getIsFeatured();
         for (Category cat : entity.getCategories()) {
             categories.add(new CategoryDTO(cat));
         }
@@ -69,6 +71,10 @@ public class ProductDTO {
 
     public String getImgUrl() {
         return imgUrl;
+    }
+
+    public Boolean getIsFeatured() {
+        return isFeatured;
     }
 
     public List<CategoryDTO> getCategories() {
