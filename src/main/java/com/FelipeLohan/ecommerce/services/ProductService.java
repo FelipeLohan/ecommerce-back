@@ -19,6 +19,7 @@ import com.FelipeLohan.ecommerce.dto.ProductMinDTO;
 import com.FelipeLohan.ecommerce.entities.Category;
 import com.FelipeLohan.ecommerce.entities.Product;
 import com.FelipeLohan.ecommerce.entities.redis.ProductRedis;
+import com.FelipeLohan.ecommerce.repositories.CategoryRepository;
 import com.FelipeLohan.ecommerce.repositories.ProductRepository;
 import com.FelipeLohan.ecommerce.repositories.redis.ProductRedisRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.DatabaseException;
@@ -29,6 +30,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ProductRedisRepository productRedisRepository;
@@ -117,8 +121,7 @@ public class ProductService {
 
         entity.getCategories().clear();
         for (CategoryDTO catDto : dto.getCategories()) {
-            Category cat = new Category();
-            cat.setId(catDto.getId());
+            Category cat = categoryRepository.getReferenceById(catDto.getId());
             entity.getCategories().add(cat);
         }
     }
