@@ -5,6 +5,8 @@ import java.util.List;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,7 @@ public class ProductService {
         return new ProductDTO(product);
     }
 
+    @Cacheable("featuredProducts")
     @Transactional(readOnly = true)
     public List<ProductMinDTO> findFeatured() {
         List<Product> result = repository.findByIsFeaturedTrue();
@@ -48,6 +51,7 @@ public class ProductService {
         return result.map(x -> new ProductMinDTO(x));
     }
 
+    @CacheEvict(value = "featuredProducts", allEntries = true)
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
@@ -56,6 +60,7 @@ public class ProductService {
         return new ProductDTO(entity);
     }
 
+    @CacheEvict(value = "featuredProducts", allEntries = true)
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
         try {
@@ -69,6 +74,7 @@ public class ProductService {
         }
     }
 
+    @CacheEvict(value = "featuredProducts", allEntries = true)
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         try {
