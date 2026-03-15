@@ -2,6 +2,8 @@ package com.FelipeLohan.ecommerce.services;
 
 import java.time.Instant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import com.FelipeLohan.ecommerce.services.exceptions.ResourceNotFoundException;
 @Service
 public class OrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
     @Autowired
     private OrderRepository repository;
 
@@ -35,6 +39,9 @@ public class OrderService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private OrderHistoryService orderHistoryService;
 
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
@@ -64,6 +71,14 @@ public class OrderService {
         repository.save(order);
         orderItemRepository.saveAll(order.getItems());
 
-        return new OrderDTO(order);
+        OrderDTO result = new OrderDTO(order);
+
+        try {
+            orderHistoryService.saveHistory(result, user.getEmail());
+        } catch (Exception e) {
+            logger.error("Falha ao salvar histórico do pedido {} no MongoDB: {}", order.getId(), e.getMessage());
+        }
+
+        return result;
     }
 }
