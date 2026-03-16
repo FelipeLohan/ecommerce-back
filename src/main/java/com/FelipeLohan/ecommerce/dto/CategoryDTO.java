@@ -1,9 +1,17 @@
 package com.FelipeLohan.ecommerce.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Dados de uma categoria")
 public class CategoryDTO {
 
+    @Schema(description = "ID da categoria", example = "1")
     private Long id;
+
+    @Schema(description = "Nome da categoria", example = "Eletrônicos")
     private String name;
+
+    @Schema(description = "Indica se a categoria está em destaque", example = "true")
     private Boolean isFeatured;
 
     public CategoryDTO() {
