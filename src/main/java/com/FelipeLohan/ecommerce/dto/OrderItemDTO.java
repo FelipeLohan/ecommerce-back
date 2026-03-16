@@ -1,7 +1,5 @@
 package com.FelipeLohan.ecommerce.dto;
 
-import com.FelipeLohan.ecommerce.entities.OrderItem;
-
 public class OrderItemDTO {
 
     private Long productId;
@@ -21,28 +19,36 @@ public class OrderItemDTO {
         this.imgUrl = imgUrl;
     }
 
-    public OrderItemDTO(OrderItem entity) {
-        productId = entity.getProduct().getId();
-        name = entity.getProduct().getName();
-        price = entity.getPrice();
-        quantity = entity.getQuantity();
-        imgUrl = entity.getProduct().getImgUrl();
-    }
-
     public Long getProductId() {
         return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Double getPrice() {
         return price;
     }
 
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public Integer getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Double getSubTotal() {
@@ -51,5 +57,9 @@ public class OrderItemDTO {
 
     public String getImgUrl() {
         return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

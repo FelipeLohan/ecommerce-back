@@ -6,8 +6,6 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotEmpty;
 
-import com.FelipeLohan.ecommerce.entities.Order;
-import com.FelipeLohan.ecommerce.entities.OrderItem;
 import com.FelipeLohan.ecommerce.entities.OrderStatus;
 
 public class OrderDTO {
@@ -34,40 +32,52 @@ public class OrderDTO {
         this.payment = payment;
     }
 
-    public OrderDTO(Order entity) {
-        this.id = entity.getId();
-        this.moment = entity.getMoment();
-        this.status = entity.getStatus();
-        this.client = new ClientDTO(entity.getClient());
-        this.payment = (entity.getPayment() == null) ? null : new PaymentDTO(entity.getPayment());
-        for (OrderItem item : entity.getItems()) {
-            OrderItemDTO itemDto = new OrderItemDTO(item);
-            items.add(itemDto);
-        }
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Instant getMoment() {
         return moment;
     }
 
+    public void setMoment(Instant moment) {
+        this.moment = moment;
+    }
+
     public OrderStatus getStatus() {
         return status;
     }
 
-    public com.FelipeLohan.ecommerce.dto.ClientDTO getClient() {
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public ClientDTO getClient() {
         return client;
+    }
+
+    public void setClient(ClientDTO client) {
+        this.client = client;
     }
 
     public PaymentDTO getPayment() {
         return payment;
     }
 
+    public void setPayment(PaymentDTO payment) {
+        this.payment = payment;
+    }
+
     public List<OrderItemDTO> getItems() {
         return items;
+    }
+
+    public void setItems(List<OrderItemDTO> items) {
+        this.items = items;
     }
 
     public Double getTotal() {

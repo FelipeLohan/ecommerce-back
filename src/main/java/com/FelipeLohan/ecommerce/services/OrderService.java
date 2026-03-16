@@ -15,6 +15,7 @@ import com.FelipeLohan.ecommerce.entities.OrderItem;
 import com.FelipeLohan.ecommerce.entities.OrderStatus;
 import com.FelipeLohan.ecommerce.entities.Product;
 import com.FelipeLohan.ecommerce.entities.User;
+import com.FelipeLohan.ecommerce.mappers.OrderMapper;
 import com.FelipeLohan.ecommerce.repositories.OrderItemRepository;
 import com.FelipeLohan.ecommerce.repositories.OrderRepository;
 import com.FelipeLohan.ecommerce.repositories.ProductRepository;
@@ -43,12 +44,15 @@ public class OrderService {
     @Autowired
     private OrderHistoryService orderHistoryService;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
         Order order = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
         authService.validateSelfOrAdmin(order.getClient().getId());
-        return new OrderDTO(order);
+        return orderMapper.toDTO(order);
     }
 
     @Transactional
@@ -71,7 +75,7 @@ public class OrderService {
         repository.save(order);
         orderItemRepository.saveAll(order.getItems());
 
-        OrderDTO result = new OrderDTO(order);
+        OrderDTO result = orderMapper.toDTO(order);
 
         try {
             orderHistoryService.saveHistory(result, user.getEmail());
