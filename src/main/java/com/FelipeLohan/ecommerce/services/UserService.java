@@ -13,6 +13,7 @@ import com.FelipeLohan.ecommerce.dto.UserDTO;
 import com.FelipeLohan.ecommerce.dto.UserInsertDTO;
 import com.FelipeLohan.ecommerce.entities.Role;
 import com.FelipeLohan.ecommerce.entities.User;
+import com.FelipeLohan.ecommerce.mappers.UserMapper;
 import com.FelipeLohan.ecommerce.repositories.RoleRepository;
 import com.FelipeLohan.ecommerce.repositories.UserRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.EmailAlreadyExistsException;
@@ -28,6 +29,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -52,7 +56,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDTO getMe() {
         User entity = authenticated();
-        return new UserDTO(entity);
+        return userMapper.toDTO(entity);
     }
 
     @Transactional
@@ -61,17 +65,13 @@ public class UserService implements UserDetailsService {
             throw new EmailAlreadyExistsException("Email já cadastrado: " + dto.getEmail());
         }
 
-        User entity = new User();
-        entity.setName(dto.getName());
-        entity.setEmail(dto.getEmail());
-        entity.setPhone(dto.getPhone());
-        entity.setBirthDate(dto.getBirthDate());
+        User entity = userMapper.toEntity(dto);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Role role = roleRepository.findByAuthority("ROLE_CLIENT");
         entity.getRoles().add(role);
 
         entity = repository.save(entity);
-        return new UserDTO(entity);
+        return userMapper.toDTO(entity);
     }
 }
