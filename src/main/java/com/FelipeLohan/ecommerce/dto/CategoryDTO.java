@@ -1,7 +1,5 @@
 package com.FelipeLohan.ecommerce.dto;
 
-import com.FelipeLohan.ecommerce.entities.Category;
-
 public class CategoryDTO {
 
     private Long id;
@@ -16,14 +14,12 @@ public class CategoryDTO {
         this.name = name;
     }
 
-    public CategoryDTO(Category entity) {
-        id = entity.getId();
-        name = entity.getName();
-        isFeatured = entity.getIsFeatured();
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

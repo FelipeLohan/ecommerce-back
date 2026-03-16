@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.FelipeLohan.ecommerce.dto.CategoryDTO;
 import com.FelipeLohan.ecommerce.entities.Category;
 import com.FelipeLohan.ecommerce.entities.redis.CategoryRedis;
+import com.FelipeLohan.ecommerce.mappers.CategoryMapper;
 import com.FelipeLohan.ecommerce.repositories.CategoryRepository;
 import com.FelipeLohan.ecommerce.repositories.redis.CategoryRedisRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.DatabaseException;
@@ -27,10 +28,13 @@ public class CategoryService {
     @Autowired
     private CategoryRedisRepository categoryRedisRepository;
 
+    @Autowired
+    private CategoryMapper categoryMapper;
+
     @Transactional(readOnly = true)
     public List<CategoryDTO> findAll() {
         List<Category> result = repository.findAll();
-        return result.stream().map(CategoryDTO::new).toList();
+        return result.stream().map(categoryMapper::toDTO).toList();
     }
 
     @Transactional(readOnly = true)
@@ -43,35 +47,31 @@ public class CategoryService {
         List<Category> result = repository.findByIsFeaturedTrue();
         List<CategoryRedis> redisEntities = result.stream().map(CategoryRedis::from).toList();
         categoryRedisRepository.saveAll(redisEntities);
-        return result.stream().map(CategoryDTO::new).toList();
+        return result.stream().map(categoryMapper::toDTO).toList();
     }
 
     @Transactional
     public CategoryDTO insert(CategoryDTO dto) {
         Category entity = new Category();
-        entity.setName(dto.getName());
-        entity.setIsFeatured(dto.getIsFeatured() != null && dto.getIsFeatured());
+        categoryMapper.updateEntity(dto, entity);
         entity = repository.save(entity);
         if (Boolean.TRUE.equals(entity.getIsFeatured())) {
             categoryRedisRepository.save(CategoryRedis.from(entity));
         }
-        return new CategoryDTO(entity);
+        return categoryMapper.toDTO(entity);
     }
 
     @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         try {
             Category entity = repository.getReferenceById(id);
-            entity.setName(dto.getName());
-            if (dto.getIsFeatured() != null) {
-                entity.setIsFeatured(dto.getIsFeatured());
-            }
+            categoryMapper.updateEntity(dto, entity);
             entity = repository.save(entity);
             categoryRedisRepository.deleteById(id);
             if (Boolean.TRUE.equals(entity.getIsFeatured())) {
                 categoryRedisRepository.save(CategoryRedis.from(entity));
             }
-            return new CategoryDTO(entity);
+            return categoryMapper.toDTO(entity);
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Categoria não encontrada");
