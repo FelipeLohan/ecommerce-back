@@ -9,9 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-import com.FelipeLohan.ecommerce.entities.Category;
-import com.FelipeLohan.ecommerce.entities.Product;
-
 public class ProductDTO {
 
     private Long id;
@@ -41,43 +38,59 @@ public class ProductDTO {
         this.imgUrl = imgUrl;
     }
 
-    public ProductDTO(Product entity) {
-        id = entity.getId();
-        name = entity.getName();
-        description = entity.getDescription();
-        price = entity.getPrice();
-        imgUrl = entity.getImgUrl();
-        isFeatured = entity.getIsFeatured();
-        for (Category cat : entity.getCategories()) {
-            categories.add(new CategoryDTO(cat));
-        }
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Double getPrice() {
         return price;
     }
 
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public String getImgUrl() {
         return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public Boolean getIsFeatured() {
         return isFeatured;
     }
 
+    public void setIsFeatured(Boolean isFeatured) {
+        this.isFeatured = isFeatured;
+    }
+
     public List<CategoryDTO> getCategories() {
         return categories;
+    }
+
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
     }
 }

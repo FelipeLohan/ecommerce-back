@@ -19,6 +19,7 @@ import com.FelipeLohan.ecommerce.dto.ProductMinDTO;
 import com.FelipeLohan.ecommerce.entities.Category;
 import com.FelipeLohan.ecommerce.entities.Product;
 import com.FelipeLohan.ecommerce.entities.redis.ProductRedis;
+import com.FelipeLohan.ecommerce.mappers.ProductMapper;
 import com.FelipeLohan.ecommerce.repositories.CategoryRepository;
 import com.FelipeLohan.ecommerce.repositories.ProductRepository;
 import com.FelipeLohan.ecommerce.repositories.redis.ProductRedisRepository;
@@ -37,11 +38,14 @@ public class ProductService {
     @Autowired
     private ProductRedisRepository productRedisRepository;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
         Product product = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
-        return new ProductDTO(product);
+        return productMapper.toDTO(product);
     }
 
     @Transactional(readOnly = true)
@@ -54,38 +58,40 @@ public class ProductService {
         List<Product> result = repository.findByIsFeaturedTrue();
         List<ProductRedis> redisEntities = result.stream().map(ProductRedis::from).toList();
         productRedisRepository.saveAll(redisEntities);
-        return result.stream().map(ProductMinDTO::new).toList();
+        return result.stream().map(productMapper::toMinDTO).toList();
     }
 
     @Transactional(readOnly = true)
     public Page<ProductMinDTO> findAll(String name, Long categoryId, Pageable pageable) {
         Long catId = (categoryId == 0) ? null : categoryId;
         Page<Product> result = repository.searchByNameAndCategory(name, catId, pageable);
-        return result.map(ProductMinDTO::new);
+        return result.map(productMapper::toMinDTO);
     }
 
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
-        copyDtoToEntity(dto, entity);
+        productMapper.updateEntity(dto, entity);
+        applyCategories(dto, entity);
         entity = repository.save(entity);
         if (Boolean.TRUE.equals(entity.getIsFeatured())) {
             productRedisRepository.save(ProductRedis.from(entity));
         }
-        return new ProductDTO(entity);
+        return productMapper.toDTO(entity);
     }
 
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
         try {
             Product entity = repository.getReferenceById(id);
-            copyDtoToEntity(dto, entity);
+            productMapper.updateEntity(dto, entity);
+            applyCategories(dto, entity);
             entity = repository.save(entity);
             productRedisRepository.deleteById(id);
             if (Boolean.TRUE.equals(entity.getIsFeatured())) {
                 productRedisRepository.save(ProductRedis.from(entity));
             }
-            return new ProductDTO(entity);
+            return productMapper.toDTO(entity);
         }
         catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado");
@@ -110,15 +116,7 @@ public class ProductService {
         return new ProductMinDTO(p.getId(), p.getName(), p.getPrice(), p.getImgUrl());
     }
 
-    private void copyDtoToEntity(ProductDTO dto, Product entity) {
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setPrice(dto.getPrice());
-        entity.setImgUrl(dto.getImgUrl());
-        if (dto.getIsFeatured() != null) {
-            entity.setIsFeatured(dto.getIsFeatured());
-        }
-
+    private void applyCategories(ProductDTO dto, Product entity) {
         entity.getCategories().clear();
         for (CategoryDTO catDto : dto.getCategories()) {
             Category cat = categoryRepository.getReferenceById(catDto.getId());
