@@ -3,7 +3,6 @@ package com.FelipeLohan.ecommerce.controllers;
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.ProductService;
 @RestController
 public class ProductControllerImpl implements ProductController {
 
-    @Autowired
-    private ProductService service;
+    private final ProductService service;
+
+    public ProductControllerImpl(ProductService service) {
+        this.service = service;
+    }
 
     @Override
     public ResponseEntity<List<ProductMinDTO>> findFeatured() {

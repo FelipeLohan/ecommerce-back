@@ -2,7 +2,6 @@ package com.FelipeLohan.ecommerce.controllers;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +14,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.OrderService;
 @RestController
 public class OrderControllerImpl implements OrderController {
 
-    @Autowired
-    private OrderService service;
+    private final OrderService service;
+
+    public OrderControllerImpl(OrderService service) {
+        this.service = service;
+    }
 
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")

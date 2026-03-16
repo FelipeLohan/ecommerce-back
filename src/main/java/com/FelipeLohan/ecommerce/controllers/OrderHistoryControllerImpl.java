@@ -1,6 +1,5 @@
 package com.FelipeLohan.ecommerce.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.OrderHistoryService;
 @RestController
 public class OrderHistoryControllerImpl implements OrderHistoryController {
 
-    @Autowired
-    private OrderHistoryService service;
+    private final OrderHistoryService service;
+
+    public OrderHistoryControllerImpl(OrderHistoryService service) {
+        this.service = service;
+    }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")

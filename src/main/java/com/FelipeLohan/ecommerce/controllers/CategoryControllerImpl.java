@@ -3,7 +3,6 @@ package com.FelipeLohan.ecommerce.controllers;
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +15,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.CategoryService;
 @RestController
 public class CategoryControllerImpl implements CategoryController {
 
-    @Autowired
-    private CategoryService service;
+    private final CategoryService service;
+
+    public CategoryControllerImpl(CategoryService service) {
+        this.service = service;
+    }
 
     @Override
     public ResponseEntity<List<CategoryDTO>> findAll() {
