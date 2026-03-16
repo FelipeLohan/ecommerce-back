@@ -12,13 +12,15 @@ import com.FelipeLohan.ecommerce.documents.OrderHistoryDocument;
 import com.FelipeLohan.ecommerce.dto.OrderDTO;
 import com.FelipeLohan.ecommerce.dto.OrderHistoryResponseDTO;
 import com.FelipeLohan.ecommerce.repositories.OrderHistoryRepository;
+import com.FelipeLohan.ecommerce.services.interfaces.OrderHistoryService;
 
 @Service
-public class OrderHistoryService {
+public class OrderHistoryServiceImpl implements OrderHistoryService {
 
     @Autowired
     private OrderHistoryRepository repository;
 
+    @Override
     public void saveHistory(OrderDTO dto, String clientEmail) {
         OrderHistoryDocument doc = new OrderHistoryDocument();
         doc.setOrderId(dto.getId());
@@ -51,11 +53,13 @@ public class OrderHistoryService {
         repository.save(doc);
     }
 
+    @Override
     public Page<OrderHistoryResponseDTO> findAll(Pageable pageable) {
         return repository.findAllByOrderByMomentDesc(pageable)
                 .map(OrderHistoryResponseDTO::new);
     }
 
+    @Override
     public Page<OrderHistoryResponseDTO> findByClientEmail(String email, Pageable pageable) {
         return repository.findByClientEmailOrderByMomentDesc(email, pageable)
                 .map(OrderHistoryResponseDTO::new);

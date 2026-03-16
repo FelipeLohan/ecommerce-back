@@ -18,9 +18,10 @@ import com.FelipeLohan.ecommerce.repositories.CategoryRepository;
 import com.FelipeLohan.ecommerce.repositories.redis.CategoryRedisRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.DatabaseException;
 import com.FelipeLohan.ecommerce.services.exceptions.ResourceNotFoundException;
+import com.FelipeLohan.ecommerce.services.interfaces.CategoryService;
 
 @Service
-public class CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository repository;
@@ -31,12 +32,14 @@ public class CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Override
     @Transactional(readOnly = true)
     public List<CategoryDTO> findAll() {
         List<Category> result = repository.findAll();
         return result.stream().map(categoryMapper::toDTO).toList();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<CategoryDTO> findFeatured() {
         List<CategoryRedis> cached = categoryRedisRepository.findByIsFeatured(true);
@@ -50,6 +53,7 @@ public class CategoryService {
         return result.stream().map(categoryMapper::toDTO).toList();
     }
 
+    @Override
     @Transactional
     public CategoryDTO insert(CategoryDTO dto) {
         Category entity = new Category();
@@ -61,6 +65,7 @@ public class CategoryService {
         return categoryMapper.toDTO(entity);
     }
 
+    @Override
     @Transactional
     public CategoryDTO update(Long id, CategoryDTO dto) {
         try {
@@ -78,6 +83,7 @@ public class CategoryService {
         }
     }
 
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {

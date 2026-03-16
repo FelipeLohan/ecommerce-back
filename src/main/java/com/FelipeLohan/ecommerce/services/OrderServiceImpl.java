@@ -20,11 +20,15 @@ import com.FelipeLohan.ecommerce.repositories.OrderItemRepository;
 import com.FelipeLohan.ecommerce.repositories.OrderRepository;
 import com.FelipeLohan.ecommerce.repositories.ProductRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.ResourceNotFoundException;
+import com.FelipeLohan.ecommerce.services.interfaces.AuthService;
+import com.FelipeLohan.ecommerce.services.interfaces.OrderHistoryService;
+import com.FelipeLohan.ecommerce.services.interfaces.OrderService;
+import com.FelipeLohan.ecommerce.services.interfaces.UserService;
 
 @Service
-public class OrderService {
+public class OrderServiceImpl implements OrderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
     private OrderRepository repository;
@@ -47,6 +51,7 @@ public class OrderService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Override
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
         Order order = repository.findById(id).orElseThrow(
@@ -55,6 +60,7 @@ public class OrderService {
         return orderMapper.toDTO(order);
     }
 
+    @Override
     @Transactional
     public OrderDTO insert(OrderDTO dto) {
 

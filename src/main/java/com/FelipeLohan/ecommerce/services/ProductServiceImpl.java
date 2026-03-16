@@ -25,9 +25,10 @@ import com.FelipeLohan.ecommerce.repositories.ProductRepository;
 import com.FelipeLohan.ecommerce.repositories.redis.ProductRedisRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.DatabaseException;
 import com.FelipeLohan.ecommerce.services.exceptions.ResourceNotFoundException;
+import com.FelipeLohan.ecommerce.services.interfaces.ProductService;
 
 @Service
-public class ProductService {
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository repository;
@@ -41,6 +42,7 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Override
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
         Product product = repository.findById(id).orElseThrow(
@@ -48,6 +50,7 @@ public class ProductService {
         return productMapper.toDTO(product);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<ProductMinDTO> findFeatured() {
         List<ProductRedis> cached = productRedisRepository.findByIsFeatured(true);
@@ -61,6 +64,7 @@ public class ProductService {
         return result.stream().map(productMapper::toMinDTO).toList();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Page<ProductMinDTO> findAll(String name, Long categoryId, Pageable pageable) {
         Long catId = (categoryId == 0) ? null : categoryId;
@@ -68,6 +72,7 @@ public class ProductService {
         return result.map(productMapper::toMinDTO);
     }
 
+    @Override
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
         Product entity = new Product();
@@ -80,6 +85,7 @@ public class ProductService {
         return productMapper.toDTO(entity);
     }
 
+    @Override
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
         try {
@@ -98,6 +104,7 @@ public class ProductService {
         }
     }
 
+    @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         try {

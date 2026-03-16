@@ -3,7 +3,6 @@ package com.FelipeLohan.ecommerce.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,10 @@ import com.FelipeLohan.ecommerce.mappers.UserMapper;
 import com.FelipeLohan.ecommerce.repositories.RoleRepository;
 import com.FelipeLohan.ecommerce.repositories.UserRepository;
 import com.FelipeLohan.ecommerce.services.exceptions.EmailAlreadyExistsException;
+import com.FelipeLohan.ecommerce.services.interfaces.UserService;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository repository;
@@ -35,7 +35,6 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         User user = repository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("Email not found");
@@ -43,7 +42,8 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    protected User authenticated() {
+    @Override
+    public User authenticated() {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             return repository.findByEmail(username);
@@ -53,12 +53,14 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public UserDTO getMe() {
         User entity = authenticated();
         return userMapper.toDTO(entity);
     }
 
+    @Override
     @Transactional
     public UserDTO register(UserInsertDTO dto) {
         if (repository.findByEmail(dto.getEmail()) != null) {
