@@ -4,7 +4,6 @@ import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,14 +22,17 @@ import com.FelipeLohan.ecommerce.services.interfaces.CategoryService;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryRepository repository;
+    private final CategoryRepository repository;
+    private final CategoryRedisRepository categoryRedisRepository;
+    private final CategoryMapper categoryMapper;
 
-    @Autowired
-    private CategoryRedisRepository categoryRedisRepository;
-
-    @Autowired
-    private CategoryMapper categoryMapper;
+    public CategoryServiceImpl(CategoryRepository repository,
+                               CategoryRedisRepository categoryRedisRepository,
+                               CategoryMapper categoryMapper) {
+        this.repository = repository;
+        this.categoryRedisRepository = categoryRedisRepository;
+        this.categoryMapper = categoryMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

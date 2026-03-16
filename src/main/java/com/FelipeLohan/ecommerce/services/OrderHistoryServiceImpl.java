@@ -3,7 +3,6 @@ package com.FelipeLohan.ecommerce.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.OrderHistoryService;
 @Service
 public class OrderHistoryServiceImpl implements OrderHistoryService {
 
-    @Autowired
-    private OrderHistoryRepository repository;
+    private final OrderHistoryRepository repository;
+
+    public OrderHistoryServiceImpl(OrderHistoryRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public void saveHistory(OrderDTO dto, String clientEmail) {

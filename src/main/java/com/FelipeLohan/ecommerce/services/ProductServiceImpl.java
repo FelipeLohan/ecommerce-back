@@ -4,7 +4,6 @@ import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -30,17 +29,20 @@ import com.FelipeLohan.ecommerce.services.interfaces.ProductService;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository repository;
+    private final ProductRepository repository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRedisRepository productRedisRepository;
+    private final ProductMapper productMapper;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private ProductRedisRepository productRedisRepository;
-
-    @Autowired
-    private ProductMapper productMapper;
+    public ProductServiceImpl(ProductRepository repository,
+                              CategoryRepository categoryRepository,
+                              ProductRedisRepository productRedisRepository,
+                              ProductMapper productMapper) {
+        this.repository = repository;
+        this.categoryRepository = categoryRepository;
+        this.productRedisRepository = productRedisRepository;
+        this.productMapper = productMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

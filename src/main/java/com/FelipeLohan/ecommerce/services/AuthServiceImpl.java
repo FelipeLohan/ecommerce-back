@@ -1,6 +1,5 @@
 package com.FelipeLohan.ecommerce.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.FelipeLohan.ecommerce.entities.User;
@@ -11,8 +10,11 @@ import com.FelipeLohan.ecommerce.services.interfaces.UserService;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public AuthServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void validateSelfOrAdmin(long userId) {
